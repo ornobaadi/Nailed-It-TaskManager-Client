@@ -1,0 +1,42 @@
+[
+    {
+        "id": "1",
+        "title": "Design UI Wireframe",
+        "description": "Create a minimalistic UI wireframe for the app.",
+        "timestamp": "2025-02-20T12:00:00Z",
+        "category": "To-Do",
+        "email": "aadi4789@gmail.com"
+    },
+    {
+        "id": "2",
+        "title": "Setup Firebase Auth",
+        "description": "Implement Google Sign-in for authentication.",
+        "timestamp": "2025-02-20T12:30:00Z",
+        "category": "In Progress",
+        "email": "aadi4789@gmail.com"
+    },
+    {
+        "id": "3",
+        "title": "Connect MongoDB",
+        "description": "Establish a connection between the backend and MongoDB.",
+        "timestamp": "2025-02-20T13:00:00Z",
+        "category": "Done",
+        "email": "aadi4789@gmail.com"
+    },
+    {
+        "id": "4",
+        "title": "Implement Drag and Drop",
+        "description": "Allow users to reorder and move tasks across categories.",
+        "timestamp": "2025-02-20T13:30:00Z",
+        "category": "To-Do",
+        "email": "aadi4789@gmail.com"
+    },
+    {
+        "id": "5",
+        "title": "Deploy Backend",
+        "description": "Deploy Express server on a cloud platform.",
+        "timestamp": "2025-02-20T14:00:00Z",
+        "category": "In Progress",
+        "email": "aadi4789@gmail.com"
+    }
+]
