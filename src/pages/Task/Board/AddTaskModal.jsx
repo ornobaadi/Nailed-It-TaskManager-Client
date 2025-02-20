@@ -90,8 +90,8 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-base-100/70 bg-opacity-50">
-            <div className="w-full max-w-md p-6 bg-base-100 rounded-xl shadow-xl">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold">Add New Task</h2>
                     <button

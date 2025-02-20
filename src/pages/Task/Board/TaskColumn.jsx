@@ -32,9 +32,9 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
 
   return (
     <div className="flex flex-col h-full bg-base-100 rounded-xl overflow-hidden shadow-md">
-      <div className="p-4 flex items-center">
+      <div className="p-3 sm:p-4 flex items-center">
         <div className={`w-3 h-3 rounded-full bg-${color} mr-2`}></div>
-        <h3 className={`font-medium ${titleColor}`}>{title}</h3>
+        <h3 className={`font-medium ${titleColor} text-sm sm:text-base`}>{title}</h3>
         <span className="ml-2 text-xs text-gray-500">({tasks.length})</span>
         <button
           onClick={() => setIsAddingTask(true)}
@@ -45,7 +45,7 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
       </div>
       <div
         ref={setNodeRef}
-        className={`flex-1 p-3 overflow-y-auto bg-base-200/30 transition-colors duration-200 ${isOver ? 'bg-base-200/60' : ''}`}
+        className={`flex-1 p-2 sm:p-3 overflow-y-auto bg-base-200/30 transition-colors duration-200 ${isOver ? 'bg-base-200/60' : ''}`}
       >
         <SortableContext
           items={tasks?.filter(task => task?._id !== undefined).map(task => task._id.toString())}
@@ -61,7 +61,7 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
                   if (e.key === 'Enter') handleSaveTask();
                 }}
                 placeholder="Enter task title"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base"
                 autoFocus
               />
               <div className="flex justify-end mt-2">
@@ -88,7 +88,7 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
                   category={task.category || "Uncategorized"}
                   containerId={containerId}
                   onEditTask={onEditTask}
-                  onDeleteTask={onDeleteTask} // Pass delete handler
+                  onDeleteTask={onDeleteTask}
                 />
               ))
           ) : (

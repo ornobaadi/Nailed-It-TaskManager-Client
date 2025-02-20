@@ -7,22 +7,17 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragOverlay,
 } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import Sidebar from '../Task/Sidebar/Sidebar';
 import BoardHeader from '../Task/Board/BoardHeader';
 import TaskColumn from '../Task/Board/TaskColumn';
-import TaskCard from '../Task/Board/TaskCard';
-import EditTaskModal from '../Task/Board/EditTaskModal'; // Import the EditTaskModal
+import EditTaskModal from '../Task/Board/EditTaskModal';
 
 const Task = () => {
   const { user } = useContext(AuthContext);
   const [theme, setTheme] = useState('light');
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeId, setActiveId] = useState(null);
-  const [activeTask, setActiveTask] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
 
   const sensors = useSensors(
@@ -85,8 +80,6 @@ const Task = () => {
 
   // Handle editing a task
   const handleEditTask = async (updatedTask) => {
-    console.log('Updated Task Data:', updatedTask);
-
     if (!user?.email) return;
 
     const taskToUpdate = {
@@ -124,46 +117,15 @@ const Task = () => {
       const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
         method: 'DELETE',
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to delete task');
       }
-  
+
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
     } catch (error) {
       console.error('Error deleting task:', error);
     }
-  };
-
-  // Handle drag-and-drop
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-
-    if (!over) {
-      setActiveId(null);
-      setActiveTask(null);
-      return;
-    }
-
-    const sourceContainer = active.data.current.container;
-    const destinationContainer = over.data.current.container;
-
-    if (sourceContainer !== destinationContainer) {
-      const categoryMap = {
-        todoTasks: 'To-Do',
-        inProgressTasks: 'In Progress',
-        doneTasks: 'Done',
-      };
-
-      const newCategory = categoryMap[destinationContainer];
-      const taskId = active.id;
-
-      // Update task category in the backend
-      updateTaskCategory(taskId, newCategory);
-    }
-
-    setActiveId(null);
-    setActiveTask(null);
   };
 
   // Filter tasks by user and category
@@ -182,9 +144,13 @@ const Task = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-base-100">
-      <Sidebar user={user} theme={theme} onThemeChange={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <BoardHeader onAddTask={handleAddTask} />
+        <BoardHeader
+          user={user}
+          theme={theme}
+          onThemeChange={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          onAddTask={handleAddTask}
+        />
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
@@ -193,17 +159,16 @@ const Task = () => {
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
             modifiers={[restrictToWindowEdges]}
           >
-            <div className="flex-1 grid grid-cols-3 gap-6 p-6 bg-base-200/50">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-base-200/50">
               <TaskColumn
                 title="To-Do"
                 tasks={filterTasksByUser.todoTasks}
                 containerId="todoTasks"
                 onAddTask={handleAddTask}
                 onEditTask={(task) => setEditingTask(task)}
-                onDeleteTask={handleDeleteTask} // Pass delete handler
+                onDeleteTask={handleDeleteTask}
               />
               <TaskColumn
                 title="In Progress"
@@ -211,7 +176,7 @@ const Task = () => {
                 containerId="inProgressTasks"
                 onAddTask={handleAddTask}
                 onEditTask={(task) => setEditingTask(task)}
-                onDeleteTask={handleDeleteTask} // Pass delete handler
+                onDeleteTask={handleDeleteTask}
               />
               <TaskColumn
                 title="Done"
@@ -219,7 +184,7 @@ const Task = () => {
                 containerId="doneTasks"
                 onAddTask={handleAddTask}
                 onEditTask={(task) => setEditingTask(task)}
-                onDeleteTask={handleDeleteTask} // Pass delete handler
+                onDeleteTask={handleDeleteTask}
               />
             </div>
           </DndContext>

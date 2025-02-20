@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useContext, useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { LogOut, ChevronDown, UserCircle, Settings } from 'lucide-react';
 import { AuthContext } from '../../../providers/AuthProvider';
 
@@ -9,7 +8,6 @@ const ProfileSection = ({ user }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
-  // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -23,7 +21,7 @@ const ProfileSection = ({ user }) => {
   }, []);
 
   return (
-    <div className="p-4 border-t border-indigo-700/30 relative" ref={profileRef}>
+    <div className="relative" ref={profileRef}>
       <div
         className="flex items-center p-2 rounded-xl hover:bg-indigo-700/30 transition-all duration-200 cursor-pointer backdrop-blur-sm"
         onClick={() => setProfileOpen(!profileOpen)}
@@ -42,15 +40,6 @@ const ProfileSection = ({ user }) => {
           </div>
         )}
 
-        <div className="ml-3 flex-1 truncate">
-          <p className="text-sm font-medium truncate text-white">
-            {user?.displayName || user?.email}
-          </p>
-          <p className="text-xs text-indigo-200 truncate">
-            {user?.displayName ? user?.email : "User"}
-          </p>
-        </div>
-
         <ChevronDown
           size={16}
           className={`text-indigo-200 transition-transform duration-200 ${profileOpen ? 'rotate-180' : ''}`}
@@ -59,19 +48,11 @@ const ProfileSection = ({ user }) => {
 
       {/* Dropdown Menu */}
       {profileOpen && (
-        <div className="absolute bottom-20 left-4 right-4 bg-white/10 backdrop-blur-lg rounded-xl shadow-xl py-2 text-white z-10 border border-white/10">
-          <Link to="/profile" className="px-4 py-3 hover:bg-white/10 flex items-center transition-colors">
-            <UserCircle size={14} className="mr-2 text-indigo-200" />
-            <span className="text-sm">Profile</span>
-          </Link>
-          <Link to="/settings" className="px-4 py-3 hover:bg-white/10 flex items-center transition-colors">
-            <Settings size={14} className="mr-2 text-indigo-200" />
-            <span className="text-sm">Settings</span>
-          </Link>
+        <div className="absolute right-0 mt-2 bg-white/10 backdrop-blur-lg rounded-xl shadow-xl text-white z-10 border border-white/10">
           <div className="border-t border-white/10 my-1"></div>
           <button
             onClick={logOut}
-            className="w-full px-4 py-3 hover:bg-red-500/20 flex items-center text-red-300 transition-colors"
+            className="btn flex items-center text-black transition-colors"
           >
             <LogOut size={14} className="mr-2" />
             <span className="text-sm">Logout</span>

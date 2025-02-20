@@ -54,10 +54,10 @@ const TaskCard = ({ _id, title, description, timestamp, category, containerId, i
       style={cardStyle}
       className="mb-3 transition-all duration-200 ease-in-out"
     >
-      <div className="p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow group">
+      <div className="p-3 sm:p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow group">
         <div className="flex items-center justify-between">
           <h4
-            className="font-medium cursor-pointer"
+            className="font-medium cursor-pointer text-sm sm:text-base"
             onClick={() => onEditTask({ _id, title, description, timestamp, category })}
           >
             {title}
@@ -71,7 +71,7 @@ const TaskCard = ({ _id, title, description, timestamp, category, containerId, i
               <GripHorizontal size={16} />
             </div>
             <button
-              onClick={() => onDeleteTask(_id)} // Handle delete
+              onClick={() => onDeleteTask(_id)}
               className="p-1 rounded-full hover:bg-red-100 transition-colors text-red-500"
             >
               <Trash2 size={16} />
@@ -79,7 +79,7 @@ const TaskCard = ({ _id, title, description, timestamp, category, containerId, i
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 mt-1">{description}</p>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1">{description}</p>
 
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-center text-xs text-gray-500">

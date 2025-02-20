@@ -1,43 +1,36 @@
 import { useState } from 'react';
-import { Plus, Filter, SortDesc, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import AddTaskModal from './AddTaskModal';
+import ProfileSection from './ProfileSection';
+import Theme from './Theme';
 
-const BoardHeader = ({ onAddTask }) => {
+const BoardHeader = ({ user, theme, onThemeChange, onAddTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const handleAddNewTask = (newTask) => {
     onAddTask(newTask);
   };
-  
+
   return (
     <>
-      <div className="flex items-center justify-between p-4 border-b border-base-300">
-        <h1 className="text-xl font-bold">Task Board</h1>
-        <div className="flex items-center space-x-2">
+      <div className="flex flex-col md:flex-row items-center justify-between p-4 border-b border-base-300">
+        <h1 className="text-xl font-bold mb-4 md:mb-0">Task Board</h1>
+        <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+          <Theme theme={theme} onThemeChange={onThemeChange} />
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center px-3 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="btn btn-success w-full md:w-auto"
           >
             <Plus size={18} className="mr-1" />
             Add New Task
           </button>
-          <div className="flex items-center space-x-1">
-            <button className="p-2 rounded-lg hover:bg-base-200 transition-colors" title="Filter Tasks">
-              <Filter size={18} className="text-gray-600" />
-            </button>
-            <button className="p-2 rounded-lg hover:bg-base-200 transition-colors" title="Sort Tasks">
-              <SortDesc size={18} className="text-gray-600" />
-            </button>
-            <button className="p-2 rounded-lg hover:bg-base-200 transition-colors" title="Clear Completed">
-              <Trash2 size={18} className="text-gray-600" />
-            </button>
-          </div>
+          <ProfileSection user={user} />
         </div>
       </div>
-      
-      <AddTaskModal 
+
+      <AddTaskModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)} 
+        onClose={() => setIsModalOpen(false)}
         onAddTask={handleAddNewTask}
       />
     </>
