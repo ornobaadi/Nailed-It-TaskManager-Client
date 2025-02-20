@@ -1,28 +1,46 @@
-// This component remains unchanged as it doesn't directly participate in the drag and drop functionality
-// Including it here for completeness
+import { useState } from 'react';
+import { Plus, Filter, SortDesc, Trash2 } from 'lucide-react';
+import AddTaskModal from './AddTaskModal';
 
-const BoardHeader = () => {
+const BoardHeader = ({ onAddTask }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const handleAddNewTask = (newTask) => {
+    onAddTask(newTask);
+  };
+  
   return (
-    <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-      <h1 className="text-xl font-bold">Task Board</h1>
-      <div className="flex space-x-2">
-        <button className="btn btn-sm btn-primary">
-          Add New Task
-        </button>
-        <div className="dropdown dropdown-end">
-          <label tabIndex={0} className="btn btn-sm btn-ghost">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
-            </svg>
-          </label>
-          <ul tabIndex={0} className="dropdown-content z-10 menu p-2 shadow bg-base-100 rounded-box w-52">
-            <li><a>Filter Tasks</a></li>
-            <li><a>Sort By</a></li>
-            <li><a>Clear All</a></li>
-          </ul>
+    <>
+      <div className="flex items-center justify-between p-4 border-b border-base-300">
+        <h1 className="text-xl font-bold">Task Board</h1>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center px-3 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            <Plus size={18} className="mr-1" />
+            Add New Task
+          </button>
+          <div className="flex items-center space-x-1">
+            <button className="p-2 rounded-lg hover:bg-base-200 transition-colors" title="Filter Tasks">
+              <Filter size={18} className="text-gray-600" />
+            </button>
+            <button className="p-2 rounded-lg hover:bg-base-200 transition-colors" title="Sort Tasks">
+              <SortDesc size={18} className="text-gray-600" />
+            </button>
+            <button className="p-2 rounded-lg hover:bg-base-200 transition-colors" title="Clear Completed">
+              <Trash2 size={18} className="text-gray-600" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      
+      <AddTaskModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} 
+        onAddTask={handleAddNewTask}
+      />
+    </>
   );
 };
 

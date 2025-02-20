@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import { auth } from "../firebase/firebase.config";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const SocialLogin = () => {
     const provider = new GoogleAuthProvider();
@@ -11,12 +12,23 @@ const SocialLogin = () => {
     const { setUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
+    const axiosPublic = useAxiosPublic();
 
     const handleGoogleSignIn = () => {
         setIsLoading(true);
+    
         signInWithPopup(auth, provider)
-            .then((result) => {
-                setUser(result.user);
+            .then(async (result) => {
+                const user = {
+                    name: result.user?.displayName,
+                    email: result.user?.email,
+                    photo: result.user?.photoURL,
+                };
+    
+                return axiosPublic.post('/users', user).then(() => result.user);
+            })
+            .then((user) => {
+                setUser(user);
                 navigate(location.state?.from || "/", { replace: true });
             })
             .catch((error) => {
@@ -24,13 +36,15 @@ const SocialLogin = () => {
             })
             .finally(() => setIsLoading(false));
     };
+    
+    
 
     return (
         <div className="flex flex-col justify-center items-center my-10">
             <button
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
-                className="btn bg-white text-black border-[#e5e5e5]"
+                className="btn bg-white w-full text-black border-[#e5e5e5]"
             >
                 <svg
                     aria-label="Google logo"

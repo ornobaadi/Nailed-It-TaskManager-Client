@@ -2,8 +2,10 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import SocialLogin from "../../shared/SocialLogin";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const Register = () => {
+    const axiosPublic = useAxiosPublic()
     const { createNewUser, setUser, updateUserProfile } = useContext(AuthContext);
     const navigate = useNavigate();
     const [error, setError] = useState({});
@@ -45,32 +47,46 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+    
         if (!validateForm()) return;
-        
+    
         setIsLoading(true);
-        
+    
         createNewUser(formData.email, formData.password)
             .then(result => {
                 setUser(result.user);
                 return updateUserProfile({ 
                     displayName: formData.name, 
                     photoURL: formData.photo 
-                });
+                }).then(() => result.user);
             })
-            .then(() => {
-                navigate('/', { state: { registrationSuccess: true } });
+            .then(user => {
+                const newUser = {
+                    name: user.displayName,
+                    email: user.email,
+                    photo: user.photoURL,
+                    createdAt: new Date().toISOString()
+                };
+    
+                return axiosPublic.post('/users', newUser);
+            })
+            .then(res => {
+                if (res.data.insertedId) {
+                    navigate("/", { state: { registrationSuccess: true } });
+                }
             })
             .catch((error) => {
-                const errorMessage = 
-                    error.code === 'auth/email-already-in-use' ? 'Email already registered' : 
-                    'Registration failed';
+                const errorMessage =
+                    error.code === "auth/email-already-in-use" ? "Email already registered" : 
+                    "Registration failed";
                 setError({ ...error, auth: errorMessage });
             })
             .finally(() => {
                 setIsLoading(false);
             });
     };
+    
+    
 
     const getPasswordStrength = () => {
         if (!formData.password) return 0;

@@ -7,23 +7,24 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragOverlay
+  DragOverlay,
 } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import Sidebar from '../Task/Sidebar/Sidebar';
 import BoardHeader from '../Task/Board/BoardHeader';
 import TaskColumn from '../Task/Board/TaskColumn';
 import TaskCard from '../Task/Board/TaskCard';
+import EditTaskModal from '../Task/Board/EditTaskModal'; // Import the EditTaskModal
 
 const Task = () => {
   const { user } = useContext(AuthContext);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState('light');
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState(null);
   const [activeTask, setActiveTask] = useState(null);
+  const [editingTask, setEditingTask] = useState(null);
 
-  // Setup DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -33,64 +34,111 @@ const Task = () => {
     useSensor(KeyboardSensor)
   );
 
+  // Fetch tasks from the backend
   useEffect(() => {
-    // Fetch tasks from your JSON file
-    fetch('/Tasks.json')
-      .then(response => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/tasks');
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Failed to fetch tasks');
         }
-        return response.json();
-      })
-      .then(data => {
-        console.log("User in context:", user?.email);
-        console.log("All tasks:", data);
+        const data = await response.json();
         setTasks(data);
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching tasks:', error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchTasks();
   }, [user]);
 
-  const handleThemeChange = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-  };
+  // Handle adding a new task
+  const handleAddTask = async (newTask) => {
+    if (!user?.email) return;
 
-  // Filter tasks by user email first, then by category
-  const filterTasksByUser = useMemo(() => {
-    if (!user || !user.email) {
-      console.log("No user logged in, showing no tasks");
-      return { todoTasks: [], inProgressTasks: [], doneTasks: [] };
-    }
-    
-    const userTasks = tasks.filter(task => task.email === user.email);
-    console.log("Filtered tasks for user:", userTasks);
-    
-    return {
-      todoTasks: userTasks.filter(task => task.category === "To-Do"),
-      inProgressTasks: userTasks.filter(task => task.category === "In Progress"),
-      doneTasks: userTasks.filter(task => task.category === "Done")
+    const taskToSave = {
+      ...newTask,
+      email: user.email,
     };
-  }, [tasks, user]);
 
-  const findTaskById = (id) => {
-    return tasks.find(task => task.id.toString() === id);
+    try {
+      const response = await fetch('http://localhost:5000/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskToSave),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create task');
+      }
+
+      const { task: savedTask } = await response.json();
+      setTasks((prevTasks) => [...prevTasks, savedTask]);
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
   };
 
-  const handleDragStart = (event) => {
-    const { active } = event;
-    const taskId = active.id;
-    setActiveId(taskId);
-    setActiveTask(findTaskById(taskId));
+  // Handle editing a task
+  const handleEditTask = async (updatedTask) => {
+    console.log('Updated Task Data:', updatedTask);
+
+    if (!user?.email) return;
+
+    const taskToUpdate = {
+      ...updatedTask,
+      email: user.email,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:5000/tasks/${updatedTask._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskToUpdate),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update task');
+      }
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === updatedTask._id ? taskToUpdate : task
+        )
+      );
+      setEditingTask(null);
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
   };
 
+  // Handle deleting a task
+  const handleDeleteTask = async (taskId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete task');
+      }
+  
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+
+  // Handle drag-and-drop
   const handleDragEnd = (event) => {
     const { active, over } = event;
-    
+
     if (!over) {
       setActiveId(null);
       setActiveTask(null);
@@ -101,54 +149,42 @@ const Task = () => {
     const destinationContainer = over.data.current.container;
 
     if (sourceContainer !== destinationContainer) {
-      // Map container IDs to category names
       const categoryMap = {
-        'todoTasks': 'To-Do',
-        'inProgressTasks': 'In Progress',
-        'doneTasks': 'Done'
+        todoTasks: 'To-Do',
+        inProgressTasks: 'In Progress',
+        doneTasks: 'Done',
       };
-      
+
       const newCategory = categoryMap[destinationContainer];
-      
-      // Update task category
-      const updatedTasks = tasks.map(task => {
-        if (task.id.toString() === active.id) {
-          return { ...task, category: newCategory };
-        }
-        return task;
-      });
+      const taskId = active.id;
 
-      // Update state
-      setTasks(updatedTasks);
-      console.log(`Moved task ${active.id} from ${sourceContainer} to ${destinationContainer}`);
-      
-      // In a real application, you would update your backend here
-      // For example: saveTaskUpdate(active.id, { category: newCategory });
+      // Update task category in the backend
+      updateTaskCategory(taskId, newCategory);
     }
-    
+
     setActiveId(null);
     setActiveTask(null);
   };
 
-  const handleDragCancel = () => {
-    setActiveId(null);
-    setActiveTask(null);
-  };
+  // Filter tasks by user and category
+  const filterTasksByUser = useMemo(() => {
+    if (!user || !user.email) {
+      return { todoTasks: [], inProgressTasks: [], doneTasks: [] };
+    }
+
+    const userTasks = tasks.filter((task) => task.email === user.email);
+    return {
+      todoTasks: userTasks.filter((task) => task.category === 'To-Do'),
+      inProgressTasks: userTasks.filter((task) => task.category === 'In Progress'),
+      doneTasks: userTasks.filter((task) => task.category === 'Done'),
+    };
+  }, [tasks, user]);
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-base-100">
-      {/* Sidebar Component */}
-      <Sidebar 
-        user={user} 
-        theme={theme} 
-        onThemeChange={handleThemeChange}
-      />
-
-      {/* Main Content Area */}
+      <Sidebar user={user} theme={theme} onThemeChange={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <BoardHeader />
-
-        {/* Task Columns */}
+        <BoardHeader onAddTask={handleAddTask} />
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
@@ -157,54 +193,47 @@ const Task = () => {
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            onDragCancel={handleDragCancel}
             modifiers={[restrictToWindowEdges]}
           >
             <div className="flex-1 grid grid-cols-3 gap-6 p-6 bg-base-200/50">
-              <TaskColumn 
-                title="To-Do" 
-                color="gray-400" 
-                tasks={filterTasksByUser.todoTasks} 
+              <TaskColumn
+                title="To-Do"
+                tasks={filterTasksByUser.todoTasks}
                 containerId="todoTasks"
+                onAddTask={handleAddTask}
+                onEditTask={(task) => setEditingTask(task)}
+                onDeleteTask={handleDeleteTask} // Pass delete handler
               />
-              
-              <TaskColumn 
-                title="In Progress" 
-                color="indigo-500" 
-                titleColor="text-indigo-700"
-                tasks={filterTasksByUser.inProgressTasks} 
+              <TaskColumn
+                title="In Progress"
+                tasks={filterTasksByUser.inProgressTasks}
                 containerId="inProgressTasks"
+                onAddTask={handleAddTask}
+                onEditTask={(task) => setEditingTask(task)}
+                onDeleteTask={handleDeleteTask} // Pass delete handler
               />
-              
-              <TaskColumn 
-                title="Done" 
-                color="emerald-500" 
-                titleColor="text-emerald-700"
-                tasks={filterTasksByUser.doneTasks} 
+              <TaskColumn
+                title="Done"
+                tasks={filterTasksByUser.doneTasks}
                 containerId="doneTasks"
+                onAddTask={handleAddTask}
+                onEditTask={(task) => setEditingTask(task)}
+                onDeleteTask={handleDeleteTask} // Pass delete handler
               />
             </div>
-
-            {/* Drag Overlay for smooth animation */}
-            <DragOverlay adjustScale zIndex={20}>
-              {activeId && activeTask ? (
-                <div className="opacity-80 scale-105 shadow-xl">
-                  <TaskCard
-                    id={activeTask.id}
-                    title={activeTask.title}
-                    description={activeTask.description}
-                    timestamp={activeTask.timestamp}
-                    category={activeTask.category}
-                    isDragging={true}
-                  />
-                </div>
-              ) : null}
-            </DragOverlay>
           </DndContext>
         )}
       </div>
+
+      {/* Edit Task Modal */}
+      {editingTask && (
+        <EditTaskModal
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+          onSave={handleEditTask}
+        />
+      )}
     </div>
   );
 };
