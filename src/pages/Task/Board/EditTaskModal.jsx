@@ -79,8 +79,8 @@ const EditTaskModal = ({ task, onClose, onSave }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
+        <div className="fixed inset-0 bg-white/60 backdrop-blur-3xl bg-opacity-50 flex items-center justify-center p-4">
+            <div className="bg-white border border-gray-200 rounded-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold">Edit Task</h2>
                     <button

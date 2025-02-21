@@ -83,7 +83,7 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
                   key={task._id}
                   _id={task._id}
                   title={task.title || "Untitled Task"}
-                  description={task.description || "No description"}
+                  description={task.description || ""}
                   timestamp={task.timestamp || Date.now()}
                   category={task.category || "Uncategorized"}
                   containerId={containerId}
@@ -93,7 +93,7 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
               ))
           ) : (
             <div className="mt-4 h-24 flex flex-col items-center justify-center text-gray-400 text-sm">
-              <Calendar size={24} className="mb-2 opacity-30" />
+              
               <span>No tasks yet</span>
             </div>
           )}
