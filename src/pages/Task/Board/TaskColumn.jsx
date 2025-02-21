@@ -25,21 +25,21 @@ const TaskColumn = ({
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   const handleSaveTask = async () => {
-    if (!newTaskTitle.trim()) {
-      return; // Prevent empty tasks from being added
-    }
-
+    if (!newTaskTitle.trim()) return;
+  
     const newTask = {
       title: newTaskTitle,
       description: '',
       category: title,
       timestamp: new Date().toISOString(),
     };
-
+  
+    console.log("Adding Task:", newTask);
     await onAddTask(newTask);
     setIsAddingTask(false);
     setNewTaskTitle('');
   };
+  
 
   const handleCancelTask = () => {
     setIsAddingTask(false);

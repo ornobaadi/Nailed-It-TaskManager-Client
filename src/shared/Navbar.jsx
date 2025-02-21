@@ -145,11 +145,11 @@ const Navbar = ({ theme, onThemeChange, onAddTask }) => {
                 </div>
             </div>
             {user && (
-                <AddTaskModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onAddTask={handleAddNewTask}
-                />
+                <AddTaskModal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+                onAddTask={handleAddNewTask} 
+            />            
             )}
         </>
     );
