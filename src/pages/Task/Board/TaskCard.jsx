@@ -2,7 +2,17 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Clock, GripHorizontal, Trash2 } from 'lucide-react';
 
-const TaskCard = ({ _id, title, description, timestamp, category, containerId, isDragging = false, onEditTask, onDeleteTask }) => {
+const TaskCard = ({ 
+  _id, 
+  title, 
+  description, 
+  timestamp, 
+  category, 
+  containerId, 
+  isDragging = false, 
+  onEditTask, 
+  onDeleteTask 
+}) => {
   const {
     attributes,
     listeners,
@@ -58,7 +68,7 @@ const TaskCard = ({ _id, title, description, timestamp, category, containerId, i
         <div className="flex items-center justify-between">
           <h4
             className="font-medium cursor-pointer text-sm sm:text-base"
-            onClick={() => onEditTask({ _id, title, description, timestamp, category })}
+            onClick={() => onEditTask && onEditTask({ _id, title, description, timestamp, category })}
           >
             {title}
           </h4>
@@ -71,7 +81,7 @@ const TaskCard = ({ _id, title, description, timestamp, category, containerId, i
               <GripHorizontal size={16} />
             </div>
             <button
-              onClick={() => onDeleteTask(_id)}
+              onClick={() => onDeleteTask && onDeleteTask(_id)}
               className="p-1 rounded-full hover:bg-red-100 transition-colors text-red-500"
             >
               <Trash2 size={16} />

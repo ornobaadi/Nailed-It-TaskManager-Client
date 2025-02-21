@@ -4,7 +4,16 @@ import TaskCard from './TaskCard';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
-const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, onAddTask, onEditTask, onDeleteTask }) => {
+const TaskColumn = ({ 
+  title, 
+  color = "gray-400", 
+  titleColor = "", 
+  tasks = [], 
+  containerId, 
+  onAddTask, 
+  onEditTask, 
+  onDeleteTask 
+}) => {
   const { setNodeRef, isOver } = useDroppable({
     id: containerId,
     data: {
@@ -43,9 +52,11 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
           <Plus size={18} className="text-gray-500" />
         </button>
       </div>
+      
       <div
         ref={setNodeRef}
-        className={`flex-1 p-2 sm:p-3 overflow-y-auto bg-base-200/30 transition-colors duration-200 ${isOver ? 'bg-base-200/60' : ''}`}
+        className={`flex-1 p-2 sm:p-3 overflow-y-auto transition-colors duration-200 
+          ${isOver ? 'bg-base-200/80' : 'bg-base-200/30'}`}
       >
         <SortableContext
           items={tasks?.filter(task => task?._id !== undefined).map(task => task._id.toString())}
@@ -93,7 +104,6 @@ const TaskColumn = ({ title, color, titleColor = "", tasks = [], containerId, on
               ))
           ) : (
             <div className="mt-4 h-24 flex flex-col items-center justify-center text-gray-400 text-sm">
-              
               <span>No tasks yet</span>
             </div>
           )}
