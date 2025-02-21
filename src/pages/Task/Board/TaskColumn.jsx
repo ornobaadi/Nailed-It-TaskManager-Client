@@ -47,10 +47,10 @@ const TaskColumn = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-base-100 rounded-xl overflow-hidden shadow-md">
-      <div className="p-3 sm:p-4 flex items-center">
+    <div className="flex flex-col h-full bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100">
+      <div className="p-4 flex items-center bg-gradient-to-r from-indigo-50 to-purple-50">
         <div className={`w-3 h-3 rounded-full bg-${color} mr-2`}></div>
-        <h3 className={`font-medium ${titleColor} text-sm sm:text-base`}>{title}</h3>
+        <h3 className={`font-semibold ${titleColor} text-sm sm:text-base`}>{title}</h3>
         <span className="ml-2 text-xs text-gray-500">({tasks.length})</span>
         <button
           onClick={() => setIsAddingTask(true)}
@@ -62,15 +62,15 @@ const TaskColumn = ({
       
       <div
         ref={setNodeRef}
-        className={`flex-1 p-2 sm:p-3 overflow-y-auto transition-colors duration-200 
-          ${isOver ? 'bg-base-200/80' : 'bg-base-200/30'}`}
+        className={`flex-1 p-3 overflow-y-auto transition-colors duration-200 
+          ${isOver ? 'bg-gray-50/80' : 'bg-gray-50/30'}`}
       >
         <SortableContext
           items={tasks?.filter(task => task?._id !== undefined).map(task => task._id.toString())}
           strategy={verticalListSortingStrategy}
         >
           {isAddingTask && (
-            <div className="mb-3 p-2 bg-white border border-gray-100 rounded-lg shadow-sm">
+            <div className="mb-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
               <input
                 type="text"
                 value={newTaskTitle}

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Banner = () => {
     return (
-        <section className="w-full bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 text-gray-800">
+        <section className="w-full min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 text-gray-800">
             <div className="inter-tight max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div className="flex flex-col items-center space-y-12">
                     {/* Text Content */}
@@ -26,7 +26,7 @@ const Banner = () => {
                     {/* Lottie Animation Container */}
                     <div className=" rounded-2xl backdrop-blur-sm">
                         <div className="relative rounded-lg overflow-hidden">
-                            <Lottie className='w-[200px] md:w-[400px]' animationData={banner} loop={true} />
+                            <Lottie className='w-[300px] md:w-[400px]' animationData={banner} loop={true} />
                         </div>
                     </div>
                 </div>

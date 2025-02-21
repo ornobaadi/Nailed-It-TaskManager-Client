@@ -56,6 +56,7 @@ const TaskCard = ({
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isCurrentlyDragging ? 0.4 : 1,
+    touchAction: 'none', // Critical for mobile touch handling
   };
 
   return (
@@ -64,21 +65,27 @@ const TaskCard = ({
       style={cardStyle}
       className="mb-3 transition-all duration-200 ease-in-out"
     >
-      <div className="p-3 sm:p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow group">
+      <div className={`p-4 bg-white border ${isCurrentlyDragging ? 'border-indigo-300' : 'border-gray-100'} 
+                       rounded-xl shadow-sm hover:shadow-md transition-shadow group
+                       ${isCurrentlyDragging ? 'ring-2 ring-indigo-300' : ''}`}>
         <div className="flex items-center justify-between">
           <h4
-            className="font-medium cursor-pointer text-sm sm:text-base"
+            className="font-medium cursor-pointer text-sm sm:text-base flex-1"
             onClick={() => onEditTask && onEditTask({ _id, title, description, timestamp, category })}
           >
             {title}
           </h4>
           <div className="flex items-center space-x-2">
+            {/* Enhanced drag handle for mobile */}
             <div
               {...attributes}
               {...listeners}
-              className="p-1 rounded cursor-grab active:cursor-grabbing text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="p-1.5 rounded cursor-grab active:cursor-grabbing text-gray-400 
+                        opacity-40 group-hover:opacity-100 transition-opacity 
+                        hover:bg-gray-100 active:bg-gray-200
+                        touch-action-none" // Critical for mobile
             >
-              <GripHorizontal size={16} />
+              <GripHorizontal size={18} />
             </div>
             <button
               onClick={() => onDeleteTask && onDeleteTask(_id)}
@@ -89,7 +96,7 @@ const TaskCard = ({
           </div>
         </div>
 
-        <p className="text-xs sm:text-sm text-gray-500 mt-1">{description}</p>
+        <p className="text-xs sm:text-sm text-gray-500 mt-2">{description}</p>
 
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-center text-xs text-gray-500">

@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/* Disable scrolling while dragging */
+body.dragging {
+    overflow: hidden;
+  }

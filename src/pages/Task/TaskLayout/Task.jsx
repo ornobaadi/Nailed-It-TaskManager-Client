@@ -8,6 +8,7 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
+  MeasuringStrategy
 } from '@dnd-kit/core';
 import { 
   arrayMove, 
@@ -30,8 +31,10 @@ const Task = () => {
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
+      // Reduce activation constraint for mobile
       activationConstraint: {
-        distance: 8,
+        delay: 250,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor)
@@ -246,6 +249,11 @@ const Task = () => {
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
           >
             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-base-200/50">
               <TaskColumn
