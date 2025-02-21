@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect, useMemo } from 'react';
-import { AuthContext } from '../../providers/AuthProvider';
+import { AuthContext } from '../../../providers/AuthProvider';
 import {
   DndContext,
   closestCenter,
@@ -9,9 +9,9 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import BoardHeader from '../Task/Board/BoardHeader';
-import TaskColumn from '../Task/Board/TaskColumn';
-import EditTaskModal from '../Task/Board/EditTaskModal';
+import Navbar from '../../../shared/Navbar';
+import TaskColumn from '../Board/TaskColumn';
+import EditTaskModal from '../Board/EditTaskModal';
 
 const Task = () => {
   const { user } = useContext(AuthContext);
@@ -145,12 +145,6 @@ const Task = () => {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-base-100">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <BoardHeader
-          user={user}
-          theme={theme}
-          onThemeChange={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-          onAddTask={handleAddTask}
-        />
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
