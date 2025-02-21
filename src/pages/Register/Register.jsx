@@ -76,9 +76,23 @@ const Register = () => {
                 }
             })
             .catch((error) => {
-                const errorMessage =
-                    error.code === "auth/email-already-in-use" ? "Email already registered" : 
-                    "Registration failed";
+                let errorMessage = "Registration failed";
+                switch (error.code) {
+                    case "auth/email-already-in-use":
+                        errorMessage = "Email already registered";
+                        break;
+                    case "auth/weak-password":
+                        errorMessage = "Password is too weak";
+                        break;
+                    case "auth/invalid-email":
+                        errorMessage = "Invalid email address";
+                        break;
+                    case "auth/network-request-failed":
+                        errorMessage = "Network error. Please check your connection";
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
                 setError({ ...error, auth: errorMessage });
             })
             .finally(() => {
@@ -206,7 +220,7 @@ const Register = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none text-sm font-medium"
+                        className="w-full btn bg-gradient-to-r from-purple-500 to-indigo-600  text-white transition-all duration-300 shadow-sm hover:shadow-md"
                     >
                         {isLoading ? (
                             <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

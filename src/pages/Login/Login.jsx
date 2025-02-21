@@ -85,7 +85,7 @@ const Login = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none text-sm font-medium"
+                        className="w-full btn bg-gradient-to-r from-purple-500 to-indigo-600 text-white transition-all duration-300 shadow-sm hover:shadow-md"
                     >
                         {isLoading ? (
                             <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

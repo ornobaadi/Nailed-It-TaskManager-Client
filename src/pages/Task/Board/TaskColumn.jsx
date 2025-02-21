@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Calendar, Check } from 'lucide-react';
+import { Plus, Calendar, Check, X } from 'lucide-react';
 import TaskCard from './TaskCard';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -25,7 +25,9 @@ const TaskColumn = ({
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   const handleSaveTask = async () => {
-    if (!newTaskTitle.trim()) return;
+    if (!newTaskTitle.trim()) {
+      return; // Prevent empty tasks from being added
+    }
 
     const newTask = {
       title: newTaskTitle,
@@ -35,6 +37,11 @@ const TaskColumn = ({
     };
 
     await onAddTask(newTask);
+    setIsAddingTask(false);
+    setNewTaskTitle('');
+  };
+
+  const handleCancelTask = () => {
     setIsAddingTask(false);
     setNewTaskTitle('');
   };
@@ -70,12 +77,19 @@ const TaskColumn = ({
                 onChange={(e) => setNewTaskTitle(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleSaveTask();
+                  if (e.key === 'Escape') handleCancelTask();
                 }}
                 placeholder="Enter task title"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base"
                 autoFocus
               />
-              <div className="flex justify-end mt-2">
+              <div className="flex justify-end mt-2 gap-2">
+                <button
+                  onClick={handleCancelTask}
+                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <X size={18} className="text-gray-500" />
+                </button>
                 <button
                   onClick={handleSaveTask}
                   className="p-1 rounded-full hover:bg-gray-100 transition-colors"

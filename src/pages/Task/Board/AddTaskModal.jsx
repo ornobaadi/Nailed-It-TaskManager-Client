@@ -180,7 +180,7 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors flex items-center"
+                            className="px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors flex items-center"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? (

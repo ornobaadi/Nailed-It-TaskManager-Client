@@ -41,7 +41,7 @@ const Task = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch('http://localhost:5000/tasks');
+        const response = await fetch('https://nailed-it-server.vercel.app/tasks');
         if (!response.ok) {
           throw new Error('Failed to fetch tasks');
         }
@@ -67,7 +67,7 @@ const Task = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/tasks', {
+      const response = await fetch('https://nailed-it-server.vercel.app/tasks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const Task = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:5000/tasks/${updatedTask._id}`, {
+      const response = await fetch(`https://nailed-it-server.vercel.app/tasks/${updatedTask._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const Task = () => {
   // Handle deleting a task
   const handleDeleteTask = async (taskId) => {
     try {
-      const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
+      const response = await fetch(`https://nailed-it-server.vercel.app/tasks/${taskId}`, {
         method: 'DELETE',
       });
 
@@ -181,7 +181,7 @@ const Task = () => {
       
       // Update in the backend
       try {
-        const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
+        const response = await fetch(`https://nailed-it-server.vercel.app/tasks/${taskId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
