@@ -23,9 +23,9 @@ const Navbar = ({ theme, onThemeChange, onAddTask }) => {
         };
     }, []);
 
-    const handleAddNewTask = (newTask) => {
-        onAddTask(newTask);
-    };
+    // const handleAddNewTask = (newTask) => {
+    //     onAddTask(newTask);
+    // };
 
     const handleLoginRedirect = () => {
         navigate('/login');
@@ -42,7 +42,7 @@ const Navbar = ({ theme, onThemeChange, onAddTask }) => {
                 </Link>
 
                 <div className="flex items-center space-x-2 sm:space-x-4">
-                    {user && (
+                    {/* {user && (
                         <button
                             onClick={() => setIsModalOpen(true)}
                             className="btn bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-300 px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-1 sm:gap-2"
@@ -51,7 +51,7 @@ const Navbar = ({ theme, onThemeChange, onAddTask }) => {
                             <span className="hidden sm:inline">Add New Task</span>
                             <span className="sm:hidden">Add</span>
                         </button>
-                    )}
+                    )} */}
 
                     {/* Profile Dropdown */}
                     <div className="relative" ref={profileRef}>
@@ -144,13 +144,13 @@ const Navbar = ({ theme, onThemeChange, onAddTask }) => {
                     </div>
                 </div>
             </div>
-            {user && (
+            {/* {user && (
                 <AddTaskModal 
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
                 onAddTask={handleAddNewTask} 
             />            
-            )}
+            )} */}
         </>
     );
 };

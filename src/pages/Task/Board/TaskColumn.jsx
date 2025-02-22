@@ -22,28 +22,55 @@ const TaskColumn = ({
   });
 
   const [isAddingTask, setIsAddingTask] = useState(false);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskData, setNewTaskData] = useState({
+    title: '',
+    description: ''
+  });
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!newTaskData.title.trim()) newErrors.title = "Title is required";
+    if (newTaskData.title.length > 50) newErrors.title = "Title must be under 50 characters";
+    if (newTaskData.description.length > 200) newErrors.description = "Description must be under 200 characters";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSaveTask = async () => {
-    if (!newTaskTitle.trim()) return;
+    if (!validateForm()) return;
   
     const newTask = {
-      title: newTaskTitle,
-      description: '',
+      title: newTaskData.title.trim(),
+      description: newTaskData.description.trim(),
       category: title,
       timestamp: new Date().toISOString(),
     };
   
-    console.log("Adding Task:", newTask);
     await onAddTask(newTask);
-    setIsAddingTask(false);
-    setNewTaskTitle('');
+    handleCancelTask();
   };
-  
 
   const handleCancelTask = () => {
     setIsAddingTask(false);
-    setNewTaskTitle('');
+    setNewTaskData({ title: '', description: '' });
+    setErrors({});
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewTaskData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
   };
 
   return (
@@ -71,18 +98,41 @@ const TaskColumn = ({
         >
           {isAddingTask && (
             <div className="mb-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <input
-                type="text"
-                value={newTaskTitle}
-                onChange={(e) => setNewTaskTitle(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSaveTask();
-                  if (e.key === 'Escape') handleCancelTask();
-                }}
-                placeholder="Enter task title"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base"
-                autoFocus
-              />
+              <div className="mb-3">
+                <input
+                  type="text"
+                  name="title"
+                  value={newTaskData.title}
+                  onChange={handleChange}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSaveTask();
+                    if (e.key === 'Escape') handleCancelTask();
+                  }}
+                  placeholder="Enter task title"
+                  className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base
+                    ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+                  autoFocus
+                />
+                {errors.title && (
+                  <p className="mt-1 text-xs text-red-500">{errors.title}</p>
+                )}
+              </div>
+              
+              <div className="mb-3">
+                <textarea
+                  name="description"
+                  value={newTaskData.description}
+                  onChange={handleChange}
+                  placeholder="Enter task description (optional)"
+                  rows="3"
+                  className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base
+                    ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                {errors.description && (
+                  <p className="mt-1 text-xs text-red-500">{errors.description}</p>
+                )}
+              </div>
+
               <div className="flex justify-end mt-2 gap-2">
                 <button
                   onClick={handleCancelTask}
