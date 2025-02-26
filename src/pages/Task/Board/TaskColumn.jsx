@@ -74,9 +74,9 @@ const TaskColumn = ({
   };
 
   return (
-    <div className="flex flex-col w-full lg:w-1/3 bg-white rounded-xl shadow-lg border border-gray-100 relative">
-      {/* Updated header with proper z-index and positioning */}
-      <div className="p-4 flex items-center bg-gradient-to-r from-indigo-50 to-purple-50 sticky top-0 z-20 rounded-t-xl border-b border-gray-100">
+    <div className="flex flex-col w-full lg:w-1/3 bg-white rounded-xl shadow-lg border border-gray-100">
+      {/* Completely non-sticky header */}
+      <div className="p-4 flex items-center bg-gradient-to-r from-indigo-50 to-purple-50 rounded-t-xl border-b border-gray-100">
         <div className={`w-3 h-3 rounded-full bg-${color} mr-2`}></div>
         <h3 className={`font-semibold ${titleColor} text-sm sm:text-base`}>{title}</h3>
         <span className="ml-2 text-xs text-gray-500">({tasks.length})</span>
@@ -88,18 +88,13 @@ const TaskColumn = ({
         </button>
       </div>
 
-      {/* Updated content container with proper z-index */}
+      {/* Simple content container with no special positioning */}
       <div
         ref={setNodeRef}
-        className={`flex-1 p-3 overflow-y-auto max-h-[70vh] lg:max-h-[calc(100vh-200px)] relative z-10
+        className={`flex-1 p-3 overflow-y-auto max-h-[70vh] lg:max-h-[calc(100vh-200px)]
           ${isOver ? 'bg-gray-50/80' : 'bg-gray-50/30'}
-          overscroll-contain will-change-scroll scroll-smooth
           scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent
           hover:scrollbar-thumb-gray-400`}
-        style={{
-          WebkitOverflowScrolling: 'touch',
-          msOverflowStyle: '-ms-autohiding-scrollbar'
-        }}
       >
         <SortableContext
           items={tasks?.filter(task => task?._id !== undefined).map(task => task._id.toString())}

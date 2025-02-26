@@ -212,10 +212,10 @@ const Task = () => {
   }, [tasks, user]);
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-base-100">
-      <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="w-full bg-base-100">
+      <div className="flex-1 flex flex-col">
         {loading ? (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center p-12">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
           </div>
         ) : (
@@ -231,9 +231,9 @@ const Task = () => {
               },
             }}
           >
-            {/* Main container with responsive classes */}
-            <div className="flex-1 w-full h-full overflow-x-hidden overflow-y-auto bg-base-200/50">
-              <div className="container mx-auto p-4">
+            {/* Simple main container with no special positioning */}
+            <div className="w-full bg-base-200/50 p-4">
+              <div className="container mx-auto">
                 <div className="flex flex-col lg:flex-row gap-4">
                   <TaskColumn
                     title="To-Do"
@@ -266,6 +266,7 @@ const Task = () => {
               </div>
             </div>
             
+            {/* Standard DragOverlay, no special z-index */}
             <DragOverlay>
               {activeTask ? (
                 <TaskCard
@@ -282,12 +283,19 @@ const Task = () => {
         )}
       </div>
 
+      {/* Modal rendered outside of the main layout flow */}
       {editingTask && (
-        <EditTaskModal
-          task={editingTask}
-          onClose={() => setEditingTask(null)}
-          onSave={handleEditTask}
-        />
+        <div className="fixed inset-0 overflow-auto" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+          <div className="absolute inset-0 bg-black/10">
+            <div className="flex items-center justify-center min-h-screen p-4">
+              <EditTaskModal
+                task={editingTask}
+                onClose={() => setEditingTask(null)}
+                onSave={handleEditTask}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
